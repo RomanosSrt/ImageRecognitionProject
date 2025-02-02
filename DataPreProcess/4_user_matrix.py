@@ -13,7 +13,9 @@ for file in os.listdir('Dataset/2_reviews_per_movie_raw'):
     ratings = pd.read_csv('Dataset/2_reviews_per_movie_raw/' + file)
     for _, row in ratings.iterrows():
         if row['username'] in matrixR.index and movie in matrixR.columns:
-            matrixR.at[row['username'], movie] = float(row['rating'] if row['rating'] != 'Null' else 0.0)
+            matrixR.at[row['username'], movie] = (
+                float(row['rating']) if row['rating'] != 'Null' else 0.0
+            )
         else:
             print(f"Skipped: username={row['username']}, movie={movie}")
                            
