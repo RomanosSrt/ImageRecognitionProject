@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import ast
 
-users_file = "ModifiedDataset/users5-200.csv"  # Path to your users.csv
+users_file = "ModifiedDataset/users50-300.csv"  # Path to your users.csv
 movies_folder = "Dataset/2_reviews_per_movie_raw"  # Folder containing movie CSV files
-output_file = "ModifiedDataset/user_dates5-200.csv"  # Where to save the result
+output_file = "ModifiedDataset/user_dates50-300.csv"  # Where to save the result
 
 # Read the users.csv file
 users_df = pd.read_csv(users_file)
@@ -36,7 +36,6 @@ result_df = pd.DataFrame({
     'mean': [int(sum(map(int, pd.to_datetime(dates).year)) / len(dates)) for dates in user_dates.values()]
 })
 
-result_df[result_df['username'] == 'Min111'].to_csv('ModifiedDataset/Min111.csv')
 
 result_df.to_csv(output_file, index=False)  # Save the result to a CSV file
 

@@ -23,6 +23,7 @@ dataframes = []
 for file in files:
     file_path = os.path.join(folder_path, file)
     df = pd.read_csv(file_path)
+    df = df[df['rating'] != 'Null']                 #remove all entries of null
     dataframes.append(df)
     
 combined_df = pd.concat(dataframes)
