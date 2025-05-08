@@ -2,9 +2,9 @@ import pandas as pd
 import os
 import ast
 
-users_file = "ModifiedDataset/users50-300.csv"  # Path to your users.csv
+users_file = "ModifiedDataset/users.csv"  # Path to your users.csv
 movies_folder = "Dataset/2_reviews_per_movie_raw"  # Folder containing movie CSV files
-output_file = "ModifiedDataset/user_dates50-300.csv"  # Where to save the result
+output_file = "ModifiedDataset/user_dates.csv"  # Where to save the result
 
 # Read the users.csv file
 users_df = pd.read_csv(users_file)
@@ -39,20 +39,20 @@ result_df = pd.DataFrame({
 
 result_df.to_csv(output_file, index=False)  # Save the result to a CSV file
 
-# import matplotlib.pyplot as plt
-# result_df = pd.read_csv(output_file)
+import matplotlib.pyplot as plt
+result_df = pd.read_csv(output_file)
 
-# bars = 10
-# plt.hist(result_df['range'], bins=bars, edgecolor='black')
-# plt.ylabel('Ratings')
-# plt.xlabel('Year')
-# plt.title('Ratings per Year Frequency Histogram')
-# plt.show()
+bars = 10
+plt.hist(result_df['range'], bins=bars, edgecolor='black')
+plt.ylabel('Ratings')
+plt.xlabel('Year')
+plt.title('Ratings per Year Frequency Histogram')
+plt.show()
 
-# bars = 20
-# plt.hist(result_df['count'], bins=bars, edgecolor='black')
-# plt.ylabel('Ratings')
-# plt.xlabel('Users')
-# plt.xlim(4, 200)
-# plt.title('Ratings per User Frequency Histogram')
-# plt.show()
+bars = 20
+plt.hist(result_df['count'], bins=bars, edgecolor='black')
+plt.ylabel('Ratings')
+plt.xlabel('Users')
+plt.xlim(50, 400)
+plt.title('Ratings per User Frequency Histogram')
+plt.show()

@@ -58,9 +58,9 @@ def kmeans_plus_plus(users, k):
 
     return np.array(centroids).T  # Transpose to match expected shape
 
-# centroids = kmeans_plus_plus(users, centers)
+centroids = kmeans_plus_plus(users, centers)
 
-centroids = centroids.to_numpy()
+# centroids = centroids.to_numpy()
 # λ_users = λ_users.to_numpy()
 # λ_centroids = λ_centroids.to_numpy()
 
@@ -158,6 +158,26 @@ print(f"Time taken: {end - start} seconds")
 centroids = pd.DataFrame(centroids, columns=[f"Cluster {i+1}" for i in range(centers)])
 centroids.to_csv("ProcessedData/centroids.csv")
 cluster_assignments.to_csv("ProcessedData/clusters.csv")
+
+from sklearn.metrics import silhouette_score
+
+centroids_np = centroids.to_numpy()  # Ensure centroids are NumPy array
+
+# Calculate Inertia
+inertia = 0
+for idx, cluster_label in enumerate(cluster_assignments):
+    cluster_idx = int(cluster_label.split()[-1]) - 1  # Convert "Cluster X" to index
+    user_vector = users[idx]
+    centroid_vector = centroids_np[:, cluster_idx]
+    distance = np.sum((user_vector - centroid_vector) ** 2)
+    inertia += distance
+
+print(f"Inertia: {inertia}")
+
+# Calculate Silhouette Score
+labels = cluster_assignments.str.extract('(\d+)').astype(int).values.flatten()
+silhouette_avg = silhouette_score(users, labels)
+print(f"Silhouette Score: {silhouette_avg}")
 
 
 

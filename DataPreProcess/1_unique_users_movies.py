@@ -9,7 +9,7 @@ files = [f for f in os.listdir(folder_path)]
 
 movieNames = []
 for file in files:
-    movieName = re.sub(r'\s?\d{4}.csv$', '', file)   # Remove the year.csv from the file name
+    movieName = re.sub(r'.csv$', '', file)   # Remove the year.csv from the file name
     movieName = re.sub('_', ':', movieName)          # Replace underscores with colons
     movieNames.append(movieName)
 
