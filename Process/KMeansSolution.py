@@ -34,7 +34,7 @@ def run_kmeans_clustering(n_clusters=3, distance_metric="euclidean"):
         "jaccard": jaccard_distance
     }[distance_metric]
 
-    # K-means++
+    # K-means++ initialization
     def kmeans_plus_plus(users, k):
         centroids = [users[np.random.randint(users.shape[0])]]
         for _ in range(1, k):
@@ -61,7 +61,7 @@ def run_kmeans_clustering(n_clusters=3, distance_metric="euclidean"):
                 mask = cluster_users != 0
                 sums = cluster_users.sum(axis=0)
                 counts = mask.sum(axis=0)
-                avg = np.divide(sums, counts, out=np.zeros_like(sums), where=counts!=0)
+                avg = np.divide(sums, counts, out=np.zeros_like(sums), where=counts != 0)
                 new_centroids.append(avg)
             else:
                 new_centroids.append(users[np.random.randint(users.shape[0])])
@@ -88,13 +88,37 @@ def run_kmeans_clustering(n_clusters=3, distance_metric="euclidean"):
     silhouette = silhouette_score(users, labels)
     print(f"Silhouette Score: {silhouette:.4f}")
 
-    # Plot
-    # pca = PCA(n_components=2)
-    # users_2d = pca.fit_transform(users)
-    # plt.figure(figsize=(8, 6))
-    # scatter = plt.scatter(users_2d[:, 0], users_2d[:, 1], c=labels, cmap='tab10', s=30)
-    # plt.title(f"Clustering (k={n_clusters}, metric={distance_metric})")
-    # plt.colorbar(scatter)
-    # plt.show()
+    # Plot clusters (PCA projection)
+    pca = PCA(n_components=2)
+    users_2d = pca.fit_transform(users)
+    plt.figure(figsize=(8, 6))
+    scatter = plt.scatter(users_2d[:, 0], users_2d[:, 1], c=labels, cmap='tab10', s=30)
+    plt.title(f"Clustering (k={n_clusters}, metric={distance_metric})")
+    plt.colorbar(scatter)
+    plt.show()
+
+    # Plot cluster counts
+    cluster_counts = cluster_assignments.value_counts()
+    plt.figure(figsize=(8, 5))
+    cluster_counts.sort_index().plot(kind='bar', color='skyblue', edgecolor='black')
+    plt.xlabel("Cluster")
+    plt.ylabel("Number of Users")
+    plt.title("User Distribution Across Clusters")
+    plt.xticks(rotation=0)
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.show()
+
+    # --- NEW: Calculate full user-to-user distance matrix ---
+    print("[...] Calculating full user-to-user distance matrix...")
+    distance_matrix = pd.DataFrame(index=usernames, columns=usernames, dtype=float)
+    for i in range(len(users)):
+        for j in range(i, len(users)):
+            dist = metric_func(users[i], users[j])
+            distance_matrix.iat[i, j] = dist
+            distance_matrix.iat[j, i] = dist  # symmetric
+
+    distance_filename = f"ProcessedData/distances.csv"
+    distance_matrix.to_csv(distance_filename)
+    print(f"[✓] User distance matrix saved to {distance_filename}")
 
     return inertia, silhouette, cluster_assignments
