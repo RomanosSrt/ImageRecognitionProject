@@ -114,8 +114,7 @@ def run_kmeans_clustering(n_clusters=3, distance_metric="euclidean"):
     for i in range(len(users)):
         for j in range(i, len(users)):
             dist = metric_func(users[i], users[j])
-            distance_matrix.iat[i, j] = dist
-            distance_matrix.iat[j, i] = dist  # symmetric
+            distance_matrix.iat[i, j] ,distance_matrix.iat[j, i] = dist, dist  # symmetric
 
     distance_filename = f"ProcessedData/distances.csv"
     distance_matrix.to_csv(distance_filename)

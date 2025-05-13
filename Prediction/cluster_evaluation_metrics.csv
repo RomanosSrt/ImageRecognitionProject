@@ -1,0 +1,4 @@
+Cluster,MAE (Train),MSE (Train),MAE (Test),MSE (Test)
+Cluster 3,1.5309,4.0864,1.5202,3.9892
+Cluster 2,1.4532,3.6053,1.4949,3.8565
+Cluster 1,1.5591,4.167,1.5013,3.9542

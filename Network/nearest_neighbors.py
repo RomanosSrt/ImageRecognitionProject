@@ -2,9 +2,9 @@ import pandas as pd
 
 # Παράμετροι
 k = 6
-distances_path = "ProcessedData/distances.csv"
+distances_path = "Prediction/distances.csv"
 clusters_path = "ProcessedData/clusters.csv"
-output_path = "ProcessedData/nearest_neighbors.csv"
+output_path = "Prediction/nearest_neighbors.csv"
 
 # Φόρτωση και καθαρισμός πίνακα αποστάσεων
 distances_df = pd.read_csv(distances_path, index_col=0)
