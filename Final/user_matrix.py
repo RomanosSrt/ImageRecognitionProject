@@ -74,7 +74,7 @@ def build_user_movie_matrix(users_file, movies_file, reviews_folder="Dataset/2_r
     matrix_df.to_csv(output_file)
     print(f"✓ Final matrix saved: {matrix_df.shape[0]} users × {matrix_df.shape[1]} movies")
 
-def main():
+def build_user_matrix():
     print("=== Build User-Movie Matrix ===")
     try:
         min_ratings = int(input("Enter minimum number of ratings per user: "))
@@ -91,4 +91,4 @@ def main():
     build_user_movie_matrix("ModifiedData/users.csv", "ModifiedData/movies.csv")
 
 if __name__ == "__main__":
-    main()
+    build_user_matrix()

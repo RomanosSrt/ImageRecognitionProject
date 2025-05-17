@@ -9,7 +9,7 @@ def ensure_users_exist():
         print("⚠ Required file 'ModifiedData/users.csv' not found.")
         print("→ Generating it now using user_matrix module...")
         try:
-            import build_user_matrix as user_matrix
+            import Final.user_matrix as user_matrix
             user_matrix.main()
         except Exception as e:
             print(f"✗ Failed to generate user matrix: {e}")
@@ -69,7 +69,7 @@ def plot_histograms(df, range_bins=10, count_bins=20, show=True):
     if show:
         plt.show()
 
-def main():
+def create_histogramms():
     print("=== User Rating Histograms ===")
     try:
         range_bins = int(input("Enter number of bins for rating range histogram (default 10): ") or "10")
@@ -87,4 +87,4 @@ def main():
     plot_histograms(df, range_bins=range_bins, count_bins=count_bins, show=show)
 
 if __name__ == "__main__":
-    main()
+    create_histogramms()

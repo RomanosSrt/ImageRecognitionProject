@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from tensorflow.keras import Input
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
@@ -18,9 +19,21 @@ def train_network(K=None):
             K = 6
 
     # Load data
-    ratings_df = pd.read_csv("ModifiedDataset/user_matrix.csv", index_col="username") / 10.0
+    ratings_df = pd.read_csv("ModifiedData/user_matrix.csv", index_col="username") / 10.0
     neighbors_df = pd.read_csv("Prediction/nearest_neighbors.csv")
-    clusters_df = pd.read_csv("ProcessedData/clusters.csv")
+
+    # Detect max available neighbors
+    available_neighbor_cols = [col for col in neighbors_df.columns if col.startswith("neighbor_")]
+    max_k_available = len(available_neighbor_cols)
+
+    if K > max_k_available:
+        print(f"⚠ Only {max_k_available} neighbors available in file. Reducing K from {K} to {max_k_available}.")
+        K = max_k_available
+
+    # Load data
+    ratings_df = pd.read_csv("ModifiedData/user_matrix.csv", index_col="username") / 10.0
+    neighbors_df = pd.read_csv("Prediction/nearest_neighbors.csv")
+    clusters_df = pd.read_csv("ModifiedData/clusters.csv")
     clusters_df.columns = ["username", "cluster"]
     clusters_df.set_index("username", inplace=True)
 
@@ -67,7 +80,8 @@ def train_network(K=None):
 
     # Build neural network
     model = Sequential([
-        Dense(128, activation='relu', input_shape=(K,)),
+        Input(shape=(K,)),  # ✅ Proper input declaration
+        Dense(128, activation='relu'),
         Dropout(0.3),
         Dense(64, activation='relu'),
         Dropout(0.3),

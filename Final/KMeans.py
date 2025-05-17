@@ -12,7 +12,7 @@ def ensure_user_matrix_exists():
         print("⚠ User matrix not found at", matrix_path)
         print("Creating user matrix...")
         try:
-            import build_user_matrix as user_matrix
+            import Final.user_matrix as user_matrix
             user_matrix.main()
         except Exception as e:
             print(f"✗ Failed to build matrix: {e}")
