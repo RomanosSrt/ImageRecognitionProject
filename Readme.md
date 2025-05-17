@@ -20,17 +20,17 @@ The system processes movie review data to:
 ```
 
 .
-├── Dataset/                      # Raw dataset (automatically downloaded if missing)
-├── ModifiedData/                # Processed user and movie data, matrix, clusters
-├── Prediction/                  # Distance matrices, neighbors, model results
-├── setup.py                     # Automatically downloads and extracts the dataset
-├── computational\_assignment.py  # Main interactive script with menu
-├── user\_matrix.py               # Builds the user-movie rating matrix
-├── histogramms.py               # Creates user histograms (ratings and duration)
-├── KMeans.py                    # Clusters users using different metrics
-├── nearest\_neighbors.py         # Computes top-K neighbors for each user
-├── network.py                   # Trains and evaluates neural network models
-└── README.md                    # Project documentation
+├── Dataset/                           # Raw dataset (automatically downloaded if missing)
+├── ModifiedData/                      # Processed user and movie data, matrix, clusters
+├── Prediction/                        # Distance matrices, neighbors, model results
+├── Final/setup.py                     # Automatically downloads and extracts the dataset
+├── Final/computational_assignment.py  # Main interactive script with menu
+├── Final/user_matrix.py               # Builds the user-movie rating matrix
+├── Final/histogramms.py               # Creates user histograms (ratings and duration)
+├── Final/KMeans.py                    # Clusters users using different metrics
+├── Final/nearest_neighbors.py         # Computes top-K neighbors for each user
+├── Final/network.py                   # Trains and evaluates neural network models
+└── README.md                          # Project documentation
 
 ````
 
