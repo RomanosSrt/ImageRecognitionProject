@@ -103,9 +103,8 @@ The script will:
 
 Developed by:
 
-* **P. Papakostas** – ΜΠΣΠ 2330
-* **L. Sarantidis** – ΜΠΣΠ 2340
-* **V. Diavastis** – ΜΠΣΠ 2309
+* **R. Sarantidis** – MPPL2327
+
 
 ---
 
