@@ -1,34 +1,117 @@
-# Data Preprocessing Overview
+# 🎬 Movie Recommender System
 
-## Folder: DataPreProcess
+This project implements a movie recommendation system based on collaborative filtering techniques, clustering algorithms, and neural networks. It is designed to work with the IMDb Movie Reviews Dataset and was developed as a final project for the course **Pattern Recognition**.
 
-The `DataPreProcess` folder contains several operational scripts designed to clean, transform, and prepare raw data for analysis. Below is a summary of the key steps and processes involved in these scripts:
+---
 
-### 1. Data Cleaning
-- **Script:** `clean_data.py`
-- **Description:** This script removes any missing or duplicate values from the dataset. It also handles outliers and corrects any inconsistencies in the data.
+## 📦 Overview
 
-### 2. Data Transformation
-- **Script:** `transform_data.py`
-- **Description:** This script applies various transformations to the data, such as normalization, scaling, and encoding categorical variables. It ensures that the data is in a suitable format for analysis or modeling.
+The system processes movie review data to:
+- Build a user-movie rating matrix
+- Cluster users using K-Means and distance metrics (Euclidean, Cosine, Jaccard)
+- Identify nearest neighbors within clusters
+- Train neural networks to predict user preferences
+- Evaluate and visualize model performance
 
-### 3. Feature Engineering
-- **Script:** `feature_engineering.py`
-- **Description:** This script creates new features from the existing data to improve the performance of machine learning models. It includes techniques like polynomial features, interaction terms, and domain-specific feature creation.
+---
 
-### 4. Data Splitting
-- **Script:** `split_data.py`
-- **Description:** This script splits the dataset into training, validation, and test sets. It ensures that the data is divided in a way that maintains the integrity of the analysis and prevents data leakage.
+## 📁 Project Structure
 
-### 5. Data Export
-- **Script:** `export_data.py`
-- **Description:** This script exports the cleaned and processed data to a specified format (e.g., CSV, JSON) for further analysis or use in machine learning models.
+```
 
-## Summary
-The scripts in the `DataPreProcess` folder are essential for preparing raw data for analysis. They ensure that the data is clean, transformed, and ready for use in various analytical and modeling tasks.
+.
+├── Dataset/                      # Raw dataset (automatically downloaded if missing)
+├── ModifiedData/                # Processed user and movie data, matrix, clusters
+├── Prediction/                  # Distance matrices, neighbors, model results
+├── setup.py                     # Automatically downloads and extracts the dataset
+├── computational\_assignment.py  # Main interactive script with menu
+├── user\_matrix.py               # Builds the user-movie rating matrix
+├── histogramms.py               # Creates user histograms (ratings and duration)
+├── KMeans.py                    # Clusters users using different metrics
+├── nearest\_neighbors.py         # Computes top-K neighbors for each user
+├── network.py                   # Trains and evaluates neural network models
+└── README.md                    # Project documentation
 
+````
 
+---
 
+## 🚀 Getting Started
 
+### 1. Install dependencies:
+```bash
+pip install pandas numpy matplotlib scikit-learn tensorflow
+````
 
-As viewed per the freequency histogram of ratings per user, the dataset does not follow a canonical distribution. Selected where users with 5 or more ratings and 100 and less ratings to keep the set not biased.
+### 2. Run the main script:
+
+```bash
+python computational_assignment.py
+```
+
+The script will:
+
+* Automatically download and extract the dataset
+* Present an interactive menu for running each part of the project
+
+---
+
+## 🧠 Workflow Summary
+
+### Step 1: Build Rating Matrix
+
+* Filters users based on number of reviews
+* Builds a matrix of users × movies (`user_matrix.csv`)
+
+### Step 2: Analyze User Behavior
+
+* Generates histograms for review count and rating range
+
+### Step 3: Cluster Users
+
+* Runs K-Means clustering
+* Supports Euclidean, Cosine, and Jaccard distances
+* Saves `clusters.csv` and visualizations
+
+### Step 4: Find Nearest Neighbors
+
+* Uses intra-cluster distances to find top-K neighbors
+* Saves `nearest_neighbors.csv`
+
+### Step 5: Train Neural Networks
+
+* Trains per-cluster networks to predict ratings
+* Evaluates model with MAE and MSE
+* Saves training loss plots and evaluation metrics
+
+---
+
+## 📊 Key Output Files
+
+| File                             | Description                        |
+| -------------------------------- | ---------------------------------- |
+| `user_matrix.csv`                | User × movie rating matrix         |
+| `clusters.csv`                   | Cluster labels for each user       |
+| `distances.csv`                  | User-to-user distance matrix       |
+| `nearest_neighbors.csv`          | Top-K neighbors per user           |
+| `loss_curve.png`                 | Loss visualization during training |
+| `cluster_evaluation_metrics.csv` | MAE/MSE evaluation per cluster     |
+
+---
+
+## 👤 Authors
+
+Developed by:
+
+* **P. Papakostas** – ΜΠΣΠ 2330
+* **L. Sarantidis** – ΜΠΣΠ 2340
+* **V. Diavastis** – ΜΠΣΠ 2309
+
+---
+
+## 📌 Notes
+
+* The entire pipeline is fully automated and modular
+* Dataset is downloaded from Dropbox at runtime
+* Each stage of the pipeline is independently callable
+* All user inputs (e.g., number of clusters, neighbors) are handled via terminal prompts
