@@ -52,6 +52,55 @@ def kmeans_plus_plus(users, k):
         centroids.append(users[np.random.choice(users.shape[0], p=prob)])
     return np.array(centroids)
 
+
+def overlap_pct(matrix, usernames, cluster_assignments, show_hist=True):
+    print("\n[*] Calculating average overlap percentage per cluster...")
+    from itertools import combinations
+    matrix = (matrix != 0).astype(int)  # Binary: 1 if rated, else 0
+
+    cluster_df = pd.DataFrame({
+        "username": usernames,
+        "cluster": cluster_assignments.values
+    })
+
+    for cluster_id in sorted(cluster_df["cluster"].unique()):
+        cluster_users = cluster_df[cluster_df["cluster"] == cluster_id]["username"]
+        user_indices = [u for u in cluster_users if u in matrix.index]
+
+        if len(user_indices) < 2:
+            print(f" - {cluster_id}: Not enough users to compute overlap.")
+            continue
+
+        total_overlap = 0
+        count = 0
+        overlaps = []
+
+        for i, j in combinations(user_indices, 2):
+            u = matrix.loc[i].values
+            v = matrix.loc[j].values
+            inter = np.sum(u & v)
+            union = np.sum(u | v)
+            if union > 0:
+                overlap = (inter / union) * 100
+                total_overlap += overlap
+                overlaps.append(overlap)
+                count += 1
+
+        avg_overlap_pct = (total_overlap / count) if count else 0
+        print(f" - {cluster_id}: Avg = {avg_overlap_pct:.2f}% across {count} pairs")
+
+        if show_hist:
+            plt.figure(figsize=(8, 5))
+            plt.hist(overlaps, bins=30, color='lightblue', edgecolor='black')
+            plt.title(f"Overlap Histogram – {cluster_id}")
+            plt.xlabel("Overlap %")
+            plt.ylabel("Pairs")
+            plt.grid(True, linestyle='--', alpha=0.6)
+            plt.tight_layout()
+            plt.show()
+
+
+
 # === Main logic ===
 def run_kmeans_clustering():
     ensure_user_matrix_exists()
@@ -126,6 +175,23 @@ def run_kmeans_clustering():
     print(f"Inertia: {inertia:.2f}")
     print(f"Silhouette Score: {silhouette:.4f}")
 
+        # === Create user x user distance matrix ===
+    print("[*] Computing user-user distance matrix...")
+
+    n_users = users.shape[0]
+    user_dist_matrix = np.zeros((n_users, n_users))
+
+    for i in range(n_users):
+        for j in range(i, n_users):  # matrix is symmetric
+            dist = metric_func(users[i], users[j])
+            user_dist_matrix[i, j] = dist
+            user_dist_matrix[j, i] = dist
+
+    dist_df = pd.DataFrame(user_dist_matrix, index=usernames, columns=usernames)
+    dist_df.to_csv("Prediction/distances.csv")
+    print("[✓] User-user distance matrix saved to Prediction/distances.csv")
+
+
     # PCA visualization
     pca = PCA(n_components=2)
     users_2d = pca.fit_transform(users)
@@ -147,6 +213,15 @@ def run_kmeans_clustering():
     plt.grid(axis='y', linestyle='--', alpha=0.7)
     plt.tight_layout()
     plt.show()
+    
+    overlap_pct(df.set_index('username').drop('username', axis=1, errors='ignore'),
+                usernames,
+                cluster_assignments)
+
 
 if __name__ == "__main__":
     run_kmeans_clustering()
+
+
+
+

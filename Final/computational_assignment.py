@@ -6,7 +6,7 @@ from user_matrix import build_user_matrix
 from histogramms import create_histogramms
 from KMeans import run_kmeans_clustering
 from nearest_neighbors import generate_nearest_neighbors
-from network import train_network
+from network2 import train_network
 
 def main_menu():
     if not os.path.exists("ModifiedData/"):

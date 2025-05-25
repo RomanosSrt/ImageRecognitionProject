@@ -42,6 +42,7 @@ def generate_nearest_neighbors(k=6,
         try:
             user_distances = distances_df.loc[username, same_cluster_users]
             user_distances = user_distances.drop(username, errors='ignore')
+            user_distances = user_distances[user_distances > 0]  # Exclude self & zero-distance ties
             nearest_neighbors = user_distances.nsmallest(k).index.tolist()
 
             neighbors_dict["username"].append(username)
