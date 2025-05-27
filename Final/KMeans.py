@@ -12,8 +12,8 @@ def ensure_user_matrix_exists():
         print("⚠ User matrix not found at", matrix_path)
         print("Creating user matrix...")
         try:
-            import Final.user_matrix as user_matrix
-            user_matrix.main()
+            import user_matrix as user_matrix
+            user_matrix.build_user_matrix()
         except Exception as e:
             print(f"✗ Failed to build matrix: {e}")
             exit(1)
@@ -126,6 +126,23 @@ def run_kmeans_clustering():
     print(f"Inertia: {inertia:.2f}")
     print(f"Silhouette Score: {silhouette:.4f}")
 
+
+        # === Create user x user distance matrix ===
+    print("[*] Computing user-user distance matrix...")
+
+    n_users = users.shape[0]
+    user_dist_matrix = np.zeros((n_users, n_users))
+
+    for i in range(n_users):
+        for j in range(i, n_users):  # matrix is symmetric
+            dist = metric_func(users[i], users[j])
+            user_dist_matrix[i, j] = dist
+            user_dist_matrix[j, i] = dist
+
+    dist_df = pd.DataFrame(user_dist_matrix, index=usernames, columns=usernames)
+    dist_df.to_csv("Prediction/distances.csv")
+    print("[✓] User-user distance matrix saved to Prediction/distances.csv")
+    
     # PCA visualization
     pca = PCA(n_components=2)
     users_2d = pca.fit_transform(users)

@@ -106,11 +106,11 @@ def train_network(K=None):
         model = Sequential([
             Input(shape=(K,)),
             # Dense(256, activation='relu'),
-            # Dropout(0.45),
-            # Dense(128, activation='relu'),
-            # Dropout(0.45),
+            # Dropout(0.3),
+            Dense(128, activation='relu'),
+            Dropout(0.3),
             Dense(64, activation='relu'),
-            # Dropout(0.45),
+            Dropout(0.3),
             Dense(32, activation='relu'),
             Dense(1)
         ])
@@ -147,7 +147,7 @@ def train_network(K=None):
         plt.plot(history.history['custom_accuracy'], label="Training Accuracy")
         plt.plot(history.history['val_custom_accuracy'], label="Validation Accuracy")
         plt.xlabel("Epochs")
-        plt.ylabel("Accuracy (±0.5 rating)")
+        plt.ylabel("Accuracy (±1 rating)")
         plt.title(f"Training vs Validation Accuracy ({cluster})")
         plt.legend()
         plt.grid(True)

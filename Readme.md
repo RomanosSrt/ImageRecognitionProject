@@ -1,116 +1,180 @@
-# 🎬 Movie Recommender System
+# 🎬 Movie Recommender System – MPPL2327
 
-This project implements a movie recommendation system based on collaborative filtering techniques, clustering algorithms, and neural networks. It is designed to work with the IMDb Movie Reviews Dataset and was developed as a final project for the course **Pattern Recognition**.
+**Author**: Sarandidis Romanos
+**Course**: Pattern Recognition
+**University**: University of Piraeus
+**Year**: 2025
 
----
-
-## 📦 Overview
-
-The system processes movie review data to:
-- Build a user-movie rating matrix
-- Cluster users using K-Means and distance metrics (Euclidean, Cosine, Jaccard)
-- Identify nearest neighbors within clusters
-- Train neural networks to predict user preferences
-- Evaluate and visualize model performance
+This project builds a movie recommendation system that combines clustering algorithms with neural networks to group users based on their preferences and generate personalized movie recommendations.
 
 ---
 
 ## 📁 Project Structure
 
-```
-
+```plaintext
 .
-├── Dataset/                           # Raw dataset (automatically downloaded if missing)
-├── ModifiedData/                      # Processed user and movie data, matrix, clusters
-├── Prediction/                        # Distance matrices, neighbors, model results
-├── Final/setup.py                     # Automatically downloads and extracts the dataset
-├── Final/computational_assignment.py  # Main interactive script with menu
-├── Final/user_matrix.py               # Builds the user-movie rating matrix
-├── Final/histogramms.py               # Creates user histograms (ratings and duration)
-├── Final/KMeans.py                    # Clusters users using different metrics
-├── Final/nearest_neighbors.py         # Computes top-K neighbors for each user
-├── Final/network.py                   # Trains and evaluates neural network models
-└── README.md                          # Project documentation
-
-````
+├── Dataset/                         # Raw dataset of movie reviews
+├── ModifiedData/                    # Processed data files
+├── Prediction/                      # Generated results (metrics, plots)
+├── Final/                           # Executables
+    ├── computational_assignment.py  # Main execution script
+    ├── setup.py                     # Dataset download and setup
+    ├── user_matrix.py               # Preprocessing and matrix construction
+    ├── histogramms.py               # User activity histogram analysis
+    ├── KMeans.py                    # Custom k-means clustering logic
+    ├── nearest_neighbors.py         # k-NN computation per user
+    ├── network.py                   # Training neural networks
+└── README.md                        # Documentation
+```
 
 ---
 
-## 🚀 Getting Started
+## 🧠 System Capabilities
 
-### 1. Install dependencies:
+### 1. Data Preprocessing
+
+* Extracts user and movie identifiers.
+* Filters users by rating count and removes rarely rated movies.
+* Constructs a **sparse user-movie matrix**.
+
+📁 Outputs:
+
+* `ModifiedData/user_matrix.csv`
+* `ModifiedData/users.csv`
+* `ModifiedData/movies.csv`
+
+---
+
+### 2. User Behavior Visualization
+
+📊 **Histograms** (from `histogramms.py`):
+
+* **Ratings per User**
+  Most users provided 1 rating making them unqualified for valid assumptions. The suggested datagroup is in the range of 50 to 400 ratings/user.
+
+* **Time Range of Reviews per User**
+  Time span ranges up to 15 years between first and last review across the users.
+
+📷 *Example Chart:*
+![Rating Count Histogram](Figures/ratingsperUser50-400.png)
+![Rating Range Histogram](Figures/dateRangeHistogram.png)
+
+---
+
+### 3. User Clustering via K-Means
+
+📌 **Distance Metrics Supported**:
+
+* **Euclidean Distance**
+* **Cosine Similarity**
+* **Jaccard Distance** (based on shared rated movies)
+
+📷 *Cluster Visualizations via PCA*:
+![PCA Clustering - Euclidean](Figures/euclideanScatter.png)
+![PCA Clustering - Cosine](Figures/cosineScatter.png)
+![PCA Clustering - Jaccard](Figures/jaccardScatter.png)
+
+📉 *Silhouette Scores (Sample Results)*:
+
+| Metric    | Best k | Silhouette Score |
+| --------- | ------ | ---------------- |
+| Euclidean | 3      | -0.0025          |
+| Cosine    | 3      | -0.0419          |
+| Jaccard   | 2      | **0.1493** ✅     |
+
+📦 Output:
+
+* `ModifiedData/clusters.csv`
+* `Prediction/distances.csv`
+
+---
+
+### 4. Nearest Neighbor Mapping
+
+For each user within a cluster, the system computes their **k=6 closest neighbors**, using Jaccard-based user distance.
+
+
+---
+
+### 5. Neural Network Recommendation System
+
+🧠 Each cluster is assigned a dedicated **feedforward neural network** trained to predict user ratings based on their neighbors' ratings.
+
+🏗️ Model Structure:
+
+* Input: k=6 ratings from neighbors
+* Hidden Layers: 128 → 64 → 32 (ReLU)
+* Output: Single rating prediction (scaled \[0–10])
+* Loss: Mean Squared Error (MSE)
+* Optimizer: Adam
+
+📈 *Training Visualization*:
+
+![Loss Curve](Prediction/accuracy_curve_Cluster5.png)
+![Accuracy Curve](Prediction/loss_curve_Cluster%205.png)
+
+📊 *Evaluation Metrics Summary*:
+
+| Cluster   | MAE (Train) | MAE (Test) | Accuracy (Test) |
+| --------- | ----------- | ---------- | --------------- |
+| Cluster 1 | 1.5370      | 1.5661     | 41.07%          |
+| Cluster 2 | 1.5302      | 1.5333     | 40.47%          |
+| Cluster 3 | 1.5805      | 1.5805     | 40.42%          |
+
+💡 **Insights**:
+
+* Accuracy remains low due to **high data sparsity (\~80% zeros)**.
+* **Jaccard clustering** performed slightly better, yet NN predictions remained limited.
+* Even after clustering, average user overlap remains under **10%**, figure below.
+
+📈 *Sparcity Visualization*:
+
+![Data Sparcity](Figures/sparcity.png)
+
+
+
+---
+
+## 🚀 How to Run
+
+1. **Install dependencies**:
+
 ```bash
 pip install pandas numpy matplotlib scikit-learn tensorflow
-````
+```
 
-### 2. Run the main script:
+2. **Run the program**:
 
 ```bash
 python computational_assignment.py
 ```
 
-The script will:
+3. **Interactive Menu**:
 
-* Automatically download and extract the dataset
-* Present an interactive menu for running each part of the project
-
----
-
-## 🧠 Workflow Summary
-
-### Step 1: Build Rating Matrix
-
-* Filters users based on number of reviews
-* Builds a matrix of users × movies (`user_matrix.csv`)
-
-### Step 2: Analyze User Behavior
-
-* Generates histograms for review count and rating range
-
-### Step 3: Cluster Users
-
-* Runs K-Means clustering
-* Supports Euclidean, Cosine, and Jaccard distances
-* Saves `clusters.csv` and visualizations
-
-### Step 4: Find Nearest Neighbors
-
-* Uses intra-cluster distances to find top-K neighbors
-* Saves `nearest_neighbors.csv`
-
-### Step 5: Train Neural Networks
-
-* Trains per-cluster networks to predict ratings
-* Evaluates model with MAE and MSE
-* Saves training loss plots and evaluation metrics
+```text
+=== Movie Recommender System ===
+1. Build user-movie matrix
+2. Create histograms
+3. Run KMeans clustering
+4. Generate nearest neighbors
+5. Train and evaluate neural network
+6. Exit
+```
 
 ---
 
-## 📊 Key Output Files
+## ⚠ Limitations
 
-| File                             | Description                        |
-| -------------------------------- | ---------------------------------- |
-| `user_matrix.csv`                | User × movie rating matrix         |
-| `clusters.csv`                   | Cluster labels for each user       |
-| `distances.csv`                  | User-to-user distance matrix       |
-| `nearest_neighbors.csv`          | Top-K neighbors per user           |
-| `loss_curve.png`                 | Loss visualization during training |
-| `cluster_evaluation_metrics.csv` | MAE/MSE evaluation per cluster     |
+* **Data Sparsity**: Most users only rate a fraction of available movies.
+* **Weak Overlap**: Low shared preferences between users impact NN learning.
+* **Poor Separation**: Clustering metrics show negative silhouette scores.
 
 ---
 
-## 👤 Authors
+## 🧪 Future Improvements
 
-Developed by:
+* Incorporate **implicit feedback** (e.g., clicks, views).
+* Apply **matrix factorization** techniques for denser latent embeddings.
+* Add **temporal modeling** for evolving user preferences.
 
-* **R. Sarantidis** – MPPL2327
 
-
----
-
-## 📌 Notes
-
-* The entire pipeline is fully automated and modular
-* Dataset is downloaded from Dropbox at runtime
-* Each stage of the pipeline is independently callable
-* All user inputs (e.g., number of clusters, neighbors) are handled via terminal prompts
